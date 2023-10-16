@@ -1,36 +1,25 @@
-#a = input("Введите шифруемую строку ")
-a = "abcdefghijk0123456789"
-""" 
-abcdefghijk
-
-012345
-abcdef
-ghijk
-
-024135
-acebdf
-gikhj
-
-agciekbhdjf
-"""
 from itertools import repeat
+
+a = input("Введите шифруемую строку ")
 
 def cypher(string, column):
     l = list()
     for i in range(column):
         l.append(string[i::column])
-    return "".join(l[::2]+(l[1::2]))
+    return "".join(l)
 
 def decypher(string, column):
     l = list(repeat("",len(string)//column+1))
     i = 0
-    last_line_len = len(string)%column-1
+    cnt = 0
+    last_line_len = len(string)%column
     for c in string:
-        l[i]+=c
-        i+=1
-        if i == (len(string)//column+(0 if i==last_line_len else 1)):
+        if i >= (len(string)//column+(0 if cnt>=last_line_len else 1)):
             i = 0
-    return l
+            cnt+=1
+        l[i]+=c
+        i+=1  
+    return "".join(l)
 
 a1 = cypher(a,6)
 a2 = decypher(a1,6)
