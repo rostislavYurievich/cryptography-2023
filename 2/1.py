@@ -1,28 +1,25 @@
-def xor_encrypt(plaintext, key):
+from itertools import cycle
+
+def xor_encrypt(message, key):
     encrypted = []
-    for i in range(len(plaintext)):
-        encrypted_byte = ord(plaintext[i]) ^ ord(key[i % len(key)])
+    for c,k in zip(message, cycle(key)):
+        encrypted_byte = ord(c) ^ ord(k)
         encrypted.append(encrypted_byte)
     return bytes(encrypted)
 
-def xor_decrypt(ciphertext, key):
+def xor_decrypt(message, key):
     decrypted = []
-    for i in range(len(ciphertext)):
-        decrypted_byte = ciphertext[i] ^ ord(key[i % len(key)])
+    for c,k in zip(message, cycle(key)):
+        decrypted_byte = c ^ ord(k)
         decrypted.append(decrypted_byte)
     return bytes(decrypted)
 
-def main():
-    plaintext = input("Введите текст для шифрования: ")
-    key = input("Введите ключ (строка с произвольными символами): ")
 
-    ciphertext = xor_encrypt(plaintext, key)
-    decrypted_text = xor_decrypt(ciphertext, key)
+plaintext = input("Введите текст для шифрования: ")
+key = input("Введите ключ (строка с произвольными символами): ")
 
-    print("\nЗашифрованный текст (в байтах):")
-    print(ciphertext)
-    print("\nДешифрованный текст:")
-    print(decrypted_text.decode('utf-8'))
+ciphertext = xor_encrypt(plaintext, key)
+decrypted_text = xor_decrypt(ciphertext, key)
 
-if __name__ == "__main__":
-    main()
+print("\nЗашифрованный текст (в байтах):\n",ciphertext)
+print("\nДешифрованный текст:\n", decrypted_text.decode('utf-8'))

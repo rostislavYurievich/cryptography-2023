@@ -5,8 +5,9 @@ from cryptography.hazmat.primitives.asymmetric import padding
 from cryptography.exceptions import InvalidSignature
 from cryptography.hazmat.primitives import serialization
 
-# Генерация ключевой пары RSA
+
 def generate_rsa_key_pair():
+    """Генерация закрытого ключа"""
     return rsa.generate_private_key(
         public_exponent=65537,
         key_size=2048,
@@ -14,9 +15,11 @@ def generate_rsa_key_pair():
     )
 
 def get_public_key(private_key):
+    """Генерация открытого ключа"""
     return private_key.public_key()
 
 def get_private_key_info(private_key):
+    """Информация для вывода"""
     return private_key.private_bytes(
         encoding=serialization.Encoding.PEM,
         format=serialization.PrivateFormat.PKCS8,
@@ -24,6 +27,7 @@ def get_private_key_info(private_key):
     ).decode()
 
 def create_signature(private_key, message):
+    """Подпись сообщения"""
     return private_key.sign(
         message,
         padding.PSS(
@@ -34,6 +38,7 @@ def create_signature(private_key, message):
     )
 
 def verify_signature(public_key, signature, message):
+    """Проверка подписи"""
     try:
         public_key.verify(
             signature,
@@ -48,30 +53,25 @@ def verify_signature(public_key, signature, message):
     except InvalidSignature:
         return "Проверка подписи не удалась"
 
-def main():
-    # Генерация ключевой пары
-    private_key = generate_rsa_key_pair()
-    public_key = get_public_key(private_key)
+# Генерация ключевой пары
+private_key = generate_rsa_key_pair()
+public_key = get_public_key(private_key)
 
-    # Ввод сообщения от пользователя
-    message = input("Введите сообщение для подписи: ").encode()
+# Ввод сообщения от пользователя
+message = input("Введите сообщение для подписи: ").encode()
 
-    # Создание подписи
-    signature = create_signature(private_key, message)
+# Создание подписи
+signature = create_signature(private_key, message)
 
-    # Проверка подписи
-    result = verify_signature(public_key, signature, message)
-    print(result)
+# Проверка подписи
+result = verify_signature(public_key, signature, message)
+print(result)
 
-    # Вывод информации о ключах
-    print("\nИнформация о ключах:")
-    print("Открытый ключ:")
-    print(public_key.public_bytes(
-        encoding=serialization.Encoding.PEM,
-        format=serialization.PublicFormat.SubjectPublicKeyInfo
+# Вывод информации о ключах
+print("\nИнформация о ключах:\n", get_private_key_info(private_key))
+print("Открытый ключ:\n",
+    public_key.public_bytes(
+    encoding=serialization.Encoding.PEM,
+    format=serialization.PublicFormat.SubjectPublicKeyInfo
     ).decode())
-    print("\nЗакрытый ключ:")
-    print(get_private_key_info(private_key))
-
-if __name__ == "__main__":
-    main()
+print("\nЗакрытый ключ:\n", get_private_key_info(private_key))

@@ -1,27 +1,12 @@
 import random
 import sympy
 import math
-
 # Функция для проверки на простоту
-def is_prime(n):
-    if n <= 1:
-        return False
-    if n <= 3:
-        return True
-    if n % 2 == 0 or n % 3 == 0:
-        return False
-    i = 5
-    while i * i <= n:
-        if n % i == 0 or n % (i + 2) == 0:
+def isprime(num):
+    for n in range(2,int(num**0.5)+1):
+        if num%n==0:
             return False
-        i += 6
     return True
-
-# Функция для нахождения НОД
-def gcd(a, b):
-    while b:
-        a, b = b, a % b
-    return a
 
 # Функция для нахождения обратного модуля
 def mod_inverse(a, m):
@@ -45,7 +30,6 @@ def generate_keys(bit_length):
 
     # Нахождение обратного модуля для e
     d = mod_inverse(e, phi)
-
     return ((e, n), (d, n))
 
 # Шифрование
@@ -60,19 +44,18 @@ def decrypt(private_key, cipher_text):
     plain_text = [chr(pow(char, d, n)) for char in cipher_text]
     return ''.join(plain_text)
 
-if __name__ == "__main__":
-    bit_length = 256  # Длина ключа в битах
+bit_length = 256  # Длина ключа в битах
 
-    # Генерация ключей
-    public_key, private_key = generate_keys(bit_length)
+# Генерация ключей
+public_key, private_key = generate_keys(bit_length)
 
-    # Сообщение для шифрования
-    message = "Hello, RSA!"
+# Сообщение для шифрования
+message = "Hello, RSA!"
 
-    # Шифрование сообщения
-    encrypted_message = encrypt(public_key, message)
-    print("Зашифрованное сообщение:", encrypted_message)
+# Шифрование сообщения
+encrypted_message = encrypt(public_key, message)
+print("Зашифрованное сообщение:", encrypted_message)
 
-    # Дешифрование сообщения
-    decrypted_message = decrypt(private_key, encrypted_message)
-    print("Расшифрованное сообщение:", decrypted_message)
+# Дешифрование сообщения
+decrypted_message = decrypt(private_key, encrypted_message)
+print("Расшифрованное сообщение:", decrypted_message)
