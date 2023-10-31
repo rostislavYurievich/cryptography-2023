@@ -5,39 +5,47 @@ import math
 # Генерация ключей
 def generate_keys():
     # Генерация случайных простых чисел p и q
-    p = sympy.randprime(1,1000)
-    q = sympy.randprime(1,1000)
+    p = sympy.randprime(1,30)
+    q = sympy.randprime(1,30)
 
     n = p * q
-    phi = (p - 1) * (q - 1)
-
     e = 2
-    while (math.gcd(e,phi)!=1):
-        e = sympy.randprime(1,phi-1)
-    d = (k*phi(n) + 1)/e
+    phi = (p - 1) * (q - 1)
+    while (e < phi):
+        if (math.gcd(e, phi) == 1):
+            break
+        else:
+            e+=1
+    k = 2 #целочисленая константа
+    d = int((1 + (k * phi)) / e)
     return ((e, n), (d, n))
 
 # Шифрование
-def encrypt(public_key, plaintext):
+def encrypt(public_key, msg):
     e, n = public_key
-    return [pow(ord(char), e)%n for char in plaintext]
+    a = []
+    for i in msg:
+        a.append(pow(i,e,n))
+    return a
+    
 
 # Дешифрование
-def decrypt(private_key, cipher_text):
+def decrypt(private_key, msg):
     d, n = private_key
-    return ''.join([chr(pow(char, d)%n) for char in cipher_text])
+    a = []
+    for i in msg:
+        a.append(pow(i,d,n))
+    return a
 
 
 # Генерация ключей
 public_key, private_key = generate_keys()
 
-# Сообщение для шифрования
-message = "Hello, RSA!"
+message = [1,3,3,4,5]
 
 # Шифрование сообщения
 encrypted_message = encrypt(public_key, message)
 print("Зашифрованное сообщение:", encrypted_message)
 
 # Дешифрование сообщения
-decrypted_message = decrypt(private_key, encrypted_message)
-print("Расшифрованное сообщение:", decrypted_message)
+print("Расшифрованное сообщение:", decrypt(private_key, encrypted_message))
